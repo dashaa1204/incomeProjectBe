@@ -27,9 +27,10 @@ const pool = new Pool(pgConfig);
 app.post("/add-user", async (req, res) => {
   const client = await pool.connect();
   const newUser = req.body;
+  console.log(newUser);
   try {
     client.query(
-      `INSERT INTO users (name, age, email) VALUES ('${newUser.name}', '${newUser.age}', '${newUser.email}')`
+      `INSERT INTO users (name, password, email) VALUES ('${newUser.name}', '${newUser.password}', '${newUser.email}')`
     );
     res.status(200).send({ message: "User added successfully" });
   } catch (e) {
@@ -50,11 +51,37 @@ app.post("/delete-user", async (req, res) => {
   }
 });
 
-// app.get("/init", async () => {
+app.post("/category", async (req, res) => {
+  const client = await pool.connect();
+  id = nanoid;
+  try {
+    client.query(
+      `INSERT INTO category (name, description, createdAt, updatedAt, category_image)`
+    );
+  } catch (e) {
+    console.log(e);
+  } finally {
+    client.release();
+  }
+});
+
+// app.get("/fix", async (req, res) => {
 //   const client = await pool.connect();
 //   try {
+//     client.query(`alter table users RENAME column age to id`);
+//   } catch (e) {
+//     console.log(e);
+//   } finally {
+//     client.release();
+//   }
+// });
+
+// app.get("/init", async () => {
+//   const client = await pool.connect();
+
+//   try {
 //     client.query(
-//       "CREATE TABLE users (name VARCHAR(255), age INT, phone VARCHAR(255), email VARCHAR(255))"
+//       `CREATE TABLE transaction (id VARCHAR(255), userid VARCHAR(255), name TEXT)`
 //     );
 //   } catch (error) {
 //     console.log(error);

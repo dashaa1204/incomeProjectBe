@@ -1,69 +1,59 @@
-const { Pool } = require("pg");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const { addUser } = require("./route/add-user");
+const { getUser } = require("./route/get-user");
+const { deleteUser } = require("./route/delete-user");
+const { editCol } = require("./route/edit-col");
 
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT } = process.env;
+const router = express.Router();
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const pgConfig = {
-  host: PGHOST,
-  database: PGDATABASE,
-  username: PGUSER,
-  password: PGPASSWORD,
-  port: PGPORT,
-  ssl: {
-    require: true,
-  },
-};
+router.post("/add-user", addUser);
+router.get("/get-user", getUser);
+router.post("/delete-user", deleteUser);
+router.post("/edit-col", editCol);
 
-const pool = new Pool(pgConfig);
+// app.post("/delete-user", async (req, res) => {
+//   const client = await pool.connect();
+//   try {
+//     client.query(`DELETE FROM users WHERE name='dashaa'`);
+//   } catch (e) {
+//     console.log(e);
+//   } finally {
+//     client.release();
+//   }
+// });
 
-app.post("/add-user", async (req, res) => {
-  const client = await pool.connect();
-  const newUser = req.body;
-  console.log(newUser);
-  try {
-    client.query(
-      `INSERT INTO users (name, password, email) VALUES ('${newUser.name}', '${newUser.password}', '${newUser.email}')`
-    );
-    res.status(200).send({ message: "User added successfully" });
-  } catch (e) {
-    console.log(e);
-  } finally {
-    client.release();
-  }
-});
+// app.post("/category", async (req, res) => {
+//   const client = await pool.connect();
+//   id = nanoid;
+//   try {
+//     client.query(
+//       `INSERT INTO category (name, description, createdAt, updatedAt, category_image)`
+//     );
+//   } catch (e) {
+//     console.log(e);
+//   } finally {
+//     client.release();
+//   }
+// });
 
-app.post("/delete-user", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    client.query(`DELETE FROM users WHERE name='dashaa'`);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    client.release();
-  }
-});
-
-app.post("/category", async (req, res) => {
-  const client = await pool.connect();
-  id = nanoid;
-  try {
-    client.query(
-      `INSERT INTO category (name, description, createdAt, updatedAt, category_image)`
-    );
-  } catch (e) {
-    console.log(e);
-  } finally {
-    client.release();
-  }
-});
+// app.get("/addCol", async (req, res) => {
+//   const client = await pool.connect();
+//   try {
+//     client.query(`ALTER TABLE users ADD currency_type TEXT`);
+//   } catch {
+//     console.log(e);
+//   } finally {
+//     client.release();
+//   }
+// });
 
 // app.get("/fix", async (req, res) => {
 //   const client = await pool.connect();
@@ -89,6 +79,8 @@ app.post("/category", async (req, res) => {
 //     client.release();
 //   }
 // });
+
+app.use(router);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

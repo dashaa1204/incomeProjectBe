@@ -2,22 +2,16 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { addUser } = require("./route/add-user");
-const { getUser } = require("./route/get-user");
-const { deleteUser } = require("./route/delete-user");
-const { editCol } = require("./route/edit-col");
-
-const router = express.Router();
-
 dotenv.config();
+
+const userRouter = require("./route/user");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(userRouter);
 
-router.post("/add-user", addUser);
-router.get("/get-user", getUser);
-router.post("/delete-user", deleteUser);
-router.post("/edit-col", editCol);
+// router.post("/edit-col", editCol);
+// router.post("/alter-col", alterCol);
 
 // app.post("/delete-user", async (req, res) => {
 //   const client = await pool.connect();
@@ -79,8 +73,6 @@ router.post("/edit-col", editCol);
 //     client.release();
 //   }
 // });
-
-app.use(router);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

@@ -22,7 +22,6 @@ async function addUser(userInfo) {
     response = await client.query(
       `INSERT INTO users (name, id, password, email) VALUES ('${userInfo.name}', '${userInfo.id}', '${userInfo.password}', '${userInfo.email}')`
     );
-    response.status(200).send({ message: "User added successfully" });
   } catch (e) {
     throw new Error(e ? e.message : "Error");
   } finally {
@@ -31,8 +30,24 @@ async function addUser(userInfo) {
   return response.rows;
 }
 
+async function delUser(userInfo) {
+  const client = await pool.connect();
+  let response;
+  try {
+    response = await client.query(`DELETE FROM users WHERE name='dashaa'`);
+  } catch (e) {
+    throw new Error(e ? e.message : "Error");
+  } finally {
+    client.release();
+  }
+  return {
+    response: "success",
+  };
+}
+
 module.exports = {
   addUser,
+  delUser,
 };
 
 // exports.deleteUser = async (req, res) => {

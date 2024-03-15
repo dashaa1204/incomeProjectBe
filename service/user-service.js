@@ -27,14 +27,28 @@ async function addUser(userInfo) {
   } finally {
     client.release();
   }
-  return response.rows;
+  return "user added successfully";
+}
+
+async function addCur(userinfo) {
+  const client = await pool.connect();
+  let response;
+  try {
+    response = await client.query(
+      `UPDATE users SET currency_type='${userinfo.currency}' WHERE id='${userinfo.id}'`
+    );
+  } catch {
+    throw new Error(e ? e.message : "Error");
+  } finally {
+    client.release();
+  }
 }
 
 async function delUser(userInfo) {
   const client = await pool.connect();
   let response;
   try {
-    response = await client.query(`DELETE FROM users WHERE name='dashaa'`);
+    response = await client.query(`DELETE FROM users`);
   } catch (e) {
     throw new Error(e ? e.message : "Error");
   } finally {
@@ -48,6 +62,7 @@ async function delUser(userInfo) {
 module.exports = {
   addUser,
   delUser,
+  addCur,
 };
 
 // exports.deleteUser = async (req, res) => {

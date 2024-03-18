@@ -33,6 +33,7 @@ async function addUser(userInfo) {
 async function addCur(userinfo) {
   const client = await pool.connect();
   let response;
+  console.log(userinfo);
   try {
     response = await client.query(
       `UPDATE users SET currency_type='${userinfo.currency}' WHERE id='${userinfo.id}'`
